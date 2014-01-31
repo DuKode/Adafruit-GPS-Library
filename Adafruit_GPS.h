@@ -15,10 +15,12 @@ products from Adafruit!
 Written by Limor Fried/Ladyada  for Adafruit Industries.  
 BSD license, check license.txt for more information
 All text above must be included in any redistribution
+
+Lat/lon decimal conversion added by Ilias Koen & Arlene Ducao, DuKode.
 ****************************************/
 
-#ifndef _ADAFRUIT_GPS_H
-#define _ADAFRUIT_GPS_H
+#ifndef _ADAFRUIT_GPS_DUKODE_H
+#define _ADAFRUIT_GPS_DUKODE_H
 
 #if ARDUINO >= 100
  #include <SoftwareSerial.h>
@@ -56,7 +58,7 @@ All text above must be included in any redistribution
 
 // standby command & boot successful message
 #define PMTK_STANDBY "$PMTK161,0*28"
-#define PMTK_STANDBY_SUCCESS "$PMTK001,161,3*36"  // Not needed currently
+#define PMTK_STANDBY_SUCCESS "$PMTK001,161,3*3"  // Not needed currently
 #define PMTK_AWAKE "$PMTK010,002*2D"
 
 // ask for the release and version
@@ -64,7 +66,7 @@ All text above must be included in any redistribution
 
 // request for updates on antenna status 
 #define PGCMD_ANTENNA "$PGCMD,33,1*6C" 
-#define PGCMD_NOANTENNA "$PGCMD,33,0*6D" 
+#define PGCMD_NOANTENNA "$PGCMD,33,0*6C" 
 
 // how long to wait when we're looking for a response
 #define MAXWAITSENTENCE 5
@@ -105,13 +107,14 @@ class Adafruit_GPS {
   void interruptReads(boolean r);
 
   boolean wakeup(void);
- boolean standby(void);
+  boolean standby(void);
 
   uint8_t hour, minute, seconds, year, month, day;
   uint16_t milliseconds;
   float latitude, longitude, geoidheight, altitude;
   float speed, angle, magvariation, HDOP;
   char lat, lon, mag;
+    float dlat, dlon; 
   boolean fix;
   uint8_t fixquality, satellites;
 

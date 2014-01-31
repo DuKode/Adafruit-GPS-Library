@@ -8,9 +8,11 @@ products from Adafruit!
 Written by Limor Fried/Ladyada for Adafruit Industries.
 BSD license, check license.txt for more information
 All text above must be included in any redistribution
+
+Lat/lon decimal conversion added by Ilias Koen & Arlene Ducao, DuKode.
 ****************************************/
 
-#include <Adafruit_GPS.h>
+#include <Adafruit_GPS_dukode.h>
 
 // how long are max NMEA lines to parse?
 #define MAXLINELENGTH 120
@@ -138,6 +140,31 @@ boolean Adafruit_GPS::parse(char *nmea) {
     else if (p[0] == ',') lon = 0;
     else return false;
 
+    //dukode
+    //parse out decimal lat
+    //dlat
+    if (lat == 'N') dlat = 1;
+    else if (lat == 'S') dlat = -1;
+    else if (lat == ',') dlat = 0;
+    else return false;
+      
+    int degrees = (int)(latitude/100.0);
+    float deg_minutes =  (float) ( latitude - ((float) degrees*100.0) );
+        dlat = dlat * (degrees + (deg_minutes/60));
+  
+
+    //dukode
+    //parse out decimal lon
+    //dlon
+    if (lon == 'W') dlon = -1;
+    else if (lon == 'E') dlon = 1;
+    else if (lon == ',') dlon = 0;
+    else return false;
+       
+    degrees = (int)(longitude/100.0);
+    deg_minutes =  (longitude - ((float)degrees *100.0));
+    dlon = dlon * (degrees + (deg_minutes/60));
+          
     // speed
     p = strchr(p, ',')+1;
     speed = atof(p);
